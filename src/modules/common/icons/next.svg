@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="54" height="54" viewBox="0 0 54 54">
+  <g id="Group_16909" data-name="Group 16909" transform="translate(0 54) rotate(-90)">
+    <path id="Path_165" data-name="Path 165" d="M27,54A27,27,0,1,0,0,27,27,27,0,0,0,27,54Z" fill="#27debf"/>
+    <g id="arrow-2" transform="translate(34.398 23.279) rotate(90)">
+      <g id="chevron-right" transform="translate(0)">
+        <path id="Path_68" data-name="Path 68" d="M1.721,14.752,0,13.031,5.655,7.376,0,1.721,1.721,0,9.1,7.376Z" fill="#fff"/>
+      </g>
+    </g>
+    <g id="arrow-2-2" data-name="arrow-2" transform="translate(34.398 23.278) rotate(90)">
+      <g id="chevron-right-2" data-name="chevron-right" transform="translate(0)">
+        <path id="Path_68-2" data-name="Path 68" d="M1.721,14.752,0,13.031,5.655,7.376,0,1.721,1.721,0,9.1,7.376Z" fill="#fff"/>
+      </g>
+    </g>
+  </g>
+</svg>

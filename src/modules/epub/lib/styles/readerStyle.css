@@ -1,0 +1,25 @@
+.epub a {
+	text-decoration: none;
+}
+
+
+.epub input {
+	/* border: none; */
+	background-color: rgba(0,0,0,0);
+}
+
+.epub ::selection {
+	background-color: #d4e9ff;
+}
+
+.epub-highlight {
+  fill-opacity: 0.3;
+  mix-blend-mode: multiply;
+	cursor: pointer;
+	pointer-events: fill;
+	transition: .1s ease-in-out;
+}
+
+.epub-highlight:hover {
+	fill-opacity: 0.4;
+}

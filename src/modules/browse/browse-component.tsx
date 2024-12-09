@@ -1,0 +1,476 @@
+// @ts-nocheck
+"use client";
+import Image from "next/image";
+import React, { Fragment, useState, useEffect, useRef, useMemo } from "react";
+import AddPage from "@modules/common/components/addPage";
+import bgimg from "@public/images/bg1.png";
+
+import CategoriesButton from "@modules/layout/templates/nav/CategoriesButton";
+import {
+  CardsGrid,
+  CardsList,
+} from "@modules/common/components/CarouselCards/CategoryItem";
+import gridEnabled from "@modules/common/icons/gridEnabled.svg";
+import gridDisabled from "@modules/common/icons/gridDisabled.svg";
+import listEnabled from "@modules/common/icons/listEnabled.svg";
+import listDisabled from "@modules/common/icons/listDisabled.svg";
+import { useCart, useRegions } from "medusa-react";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { getProductsList } from "@lib/data";
+import { StoreGetProductsParams } from "@medusajs/medusa";
+import usePreviews from "@lib/hooks/use-previews";
+import { getProductImage } from "@lib/util/prices";
+import { useMeCustomer } from "medusa-react";
+import Spinner from "@modules/common/icons/spinner";
+import { fetchProducts } from "@lib/util/products_api";
+import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { round } from "lodash";
+
+const BrowseComponent = () => {
+  const [isInputVisible, setInputVisible] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { customer } = useMeCustomer();
+  const toggleInput = () => {
+    setInputVisible(!isInputVisible);
+  };
+
+  const [isDropdownOpen, setDropdownOpen] = useState(false);
+
+  const handleDropdownToggle = () => {
+    setDropdownOpen(!isDropdownOpen);
+  };
+  const [showModal, setShowModal] = useState(false);
+  const [isGridView, setGridView] = useState(true);
+
+  const enableGridView = () => {
+    if (!isGridView) {
+      setGridView(true);
+    }
+  };
+
+  const enableListView = () => {
+    if (isGridView) {
+      setGridView(false);
+    }
+  };
+  const categoriesRef = useRef(null);
+  const handleDocumentClick = (event) => {
+    if (
+      categoriesRef.current &&
+      // !categoriesRef.current.contains(event.target) &&
+      event.target !== categoriesRef.current
+    ) {
+      setDropdownOpen(false);
+    }
+  };
+
+  const currentyCode = window.localStorage.getItem("currentyCode");
+  const currency_code = currentyCode || 'inr';
+
+  const convertToDecimal = (amount) => {
+    return Math.floor(amount) / 100;
+  };
+
+  const formatPrice = (amount, currency_code) => {
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      // TODO assuming region is already defined somewhere
+      currency: currency_code,
+    }).format(convertToDecimal(amount));
+  };
+
+  const loadPrice = (variants) => {
+    const priceObj = variants[0].prices.filter(
+      (variant) => variant.currency_code == currency_code
+    );
+    let price = "0";
+    if (priceObj.length != 0) {
+      price = formatPrice(priceObj[0].amount, currency_code);
+    }
+    return price;
+  };
+
+  useEffect(() => {
+    document.addEventListener("click", handleDocumentClick);
+    return () => {
+      document.removeEventListener("click", handleDocumentClick);
+    };
+  }, []);
+
+  const closeDropdown = () => {
+    setDropdownOpen(!isDropdownOpen);
+  };
+
+  const toggleMovePolygon = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
+  const { cart } = useCart();
+  const queryParams: StoreGetProductsParams = useMemo(() => {
+    const params: StoreGetProductsParams = {};
+
+    if (cart?.id) {
+      params.cart_id = cart.id;
+    }
+
+    if (cart?.region?.currency_code) {
+      params.currency_code = cart.region.currency_code;
+    }
+    params.limit = 25;
+
+    return params;
+  }, [cart?.id, cart?.region]);
+
+  /*const { data, isLoading } = useInfiniteQuery(
+    [queryParams, cart],
+    ({ pageParam }) => getProductsList({ pageParam, queryParams }),
+    {
+      getNextPageParam: (lastPage) => lastPage.nextPage,
+    }
+  )
+
+  const previews = usePreviews({ pages: data?.pages, region: cart?.region })*/
+  const paramsObject = useSearchParams();
+  const router = useRouter();
+  const { regions } = useRegions();
+
+  const [limit, setLimit] = useState(
+    parseInt(paramsObject.get("limit") ?? "20")
+  );
+  const [currentPage, setCurrentPage] = useState(
+    parseInt(paramsObject.get("page") ?? "1")
+  );
+  const [offset, setOffset] = useState(
+    currentPage == 1 ? 0 : currentPage * limit
+  );
+  const [count, setCount] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+  const [totalPage, setTotalPage] = useState(0);
+  const [order, setOrder] = useState("created_at");
+  const [productsObject, setProductsObject] = useState([]);
+
+  useEffect(() => {
+    const urlLocationupdate = () => {
+      router.push(`/browse?limit=${limit}&page=${currentPage}&order=${order}`);
+    };
+
+    const loadProducts = async () => {
+      try {
+        const data = await fetchProducts(offset, limit, [], order);
+        setCount(parseInt(data.count));
+        let pageNum = 1;
+        if (data.count > limit) {
+          pageNum = Number.isInteger(data.count / limit)
+            ? data.count / limit
+            : data.count / limit + 1;
+        }
+        setTotalPage(pageNum);
+        urlLocationupdate();
+        setIsLoading(false);
+        setProductsObject(data.products);
+      } catch (error) {
+        // Handle error
+      }
+    };
+    if (isLoading) {
+      loadProducts();
+    }
+  }, [
+    currentPage,
+    limit,
+    offset,
+    count,
+    totalPage,
+    order,
+    router,
+    regions,
+    isLoading,
+  ]);
+
+  const pageSwitch = (page = 1) => {
+    setIsLoading(true);
+    setOffset(page == 1 ? 0 : (page - 1) * limit);
+    setCurrentPage(page);
+  };
+
+  const updateLimit = (limit = 20) => {
+    setIsLoading(true);
+    setLimit(limit);
+  };
+  const updateOrder = (order = "") => {
+    setIsLoading(true);
+    setOrder(order);
+  };
+
+  return (
+    <Fragment>
+      <Image
+        className=" hidden lg:block  absolute z-0 top-48 w-16 "
+        src="/images/LandingPage/Leaf1.png"
+        alt=""
+        width="100"
+        height={350}
+      />
+      <Image
+        className=" hidden lg:block absolute z-0 top-5 mt-16 right-[0%] xl:w-26  "
+        src="/images/LandingPage/Leaf-Bg.png"
+        alt=""
+        width={100}
+        height={350}
+      />
+
+      <div className="sm:px-16 px-5">
+        <div className="rounded-3xl container mx-auto mb-[-50px] px-6 min-h-[80vh]">
+          {/*<Image
+              className=" absolute ml-[460px] w-[1200px] sm:block hidden"
+              src={bgimg}
+              alt="bgimg"
+            />*/}
+
+          <div className=" relative pt-1 pb-8 ">
+            <div className="mt-12">
+              <div className="  text-[#015464] text-xl font-graphik mt-5 ">
+                <ul className="flex m-0 items-center p-0">
+                  <li className="flex items-center text-left">
+                    <a
+                      href="/"
+                      title=""
+                      className="cursor-pointer text-sm font-normal leading-5 text-[#015464] hover:text-gray-900"
+                    >
+                      {" "}
+                      Home{" "}
+                    </a>
+                  </li>
+
+                  <li className="flex items-center text-left">
+                    <svg
+                      className="block h-5 w-5 align-middle text-[#015464]"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                      aria-hidden="true"
+                    >
+                      <path d="M5.555 17.776l8-16 .894.448-8 16-.894-.448z"></path>
+                    </svg>
+
+                    <a
+                      href="#"
+                      title=""
+                      className="cursor-pointer text-sm font-normal leading-5 text-[#015464] hover:text-gray-900"
+                    >
+                      {" "}
+                      Browse{" "}
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div className=" container justify-start  ">
+              <div className=" ">
+                <h3 className=" text-[#015464] text-3xl font-graphikBold mt-2  ">
+                  Browse
+                </h3>
+              </div>
+              <div className="flex mt-10 flex-wrap">
+                <button
+                  className={`py-4 text-[#015464] text-sm font-semibold border-b-8 hover:border-[#015464] border-${
+                    !isDropdownOpen ? "[#015464]" : "transparent"
+                  } `}
+                >
+                  New Releases
+                </button>
+                <button
+                  className={`ml-10 py-4 text-[#015464] text-sm font-semibold border-b-8 hover:border-[#015464] border-${
+                    isDropdownOpen ? "[#015464]" : "transparent"
+                  } `}
+                  onClick={handleDropdownToggle}
+                  ref={handleDocumentClick}
+                >
+                  Categories{" "}
+                </button>
+                <div className="sm:flex flex-col md:flex-row mt-3 lg:mt-0  sm:space-x-3 lg:ml-auto mb-2 justify-end sm:block flex">
+                  <select
+                    onChange={(event) => updateLimit(event.target.value)}
+                    className="  py-2 w-60 bg-[#EEF2F6] text-[#015464] focus:text-[#015464] px-3  ml-1 lg:ml-1 mb-1 border-none rounded-md dropdown-icon"
+                  >
+                    <option value={20}>Upto 20</option>
+                    <option value={30}>Upto 30</option>
+                    <option value={50}>Upto 50</option>
+                  </select>
+                  <select
+                    onChange={(event) => updateOrder(event.target.value)}
+                    className=" py-2 w-60 bg-[#EEF2F6] text-[#015464] border border-gray-200 px-3 border-none  ml-1 mb-1 md:ml-5 lg:ml-1 rounded-md xs:mt-5 dropdown-icon"
+                  >
+                    {/*<option value={"title"}>Best Seller </option>*/}
+                    <option value={"title"}>Highly Recommended </option>
+                    <option value={"title"}> Book Titles (A to Z) </option>
+                    <option value={"-title"}>Book Titles (Z to A) </option>
+                    <option value={"-created_at"}>
+                      {" "}
+                      Publication (Oldest First){" "}
+                    </option>
+                    <option value={"created_at"}>
+                      Publication (Newest First)
+                    </option>
+                  </select> 
+                  <button onClick={enableGridView} className="hidden xl:block">
+                    <Image
+                      width={14}
+                      height={14}
+                      src={isGridView ? gridEnabled : gridDisabled}
+                      alt="gridEnabled"
+                      className={`px-2 ${isGridView ? "w-12" : "w-9"}`}
+                    />
+                  </button>
+                  <button onClick={enableListView} className="hidden xl:block">
+                    <Image
+                      width={14}
+                      height={14}
+                      src={!isGridView ? listEnabled : listDisabled}
+                      alt="listDisabled"
+                      className={` items-center ${isGridView ? "w-5" : "w-7"}`}
+                    />
+                  </button>
+                </div>
+              </div>
+              <div className="  mr-10 top-1 ">
+                {" "}
+                {isDropdownOpen && (
+                  <div className=" w-full ">
+                    <CategoriesButton
+                      closeDropdown={closeDropdown}
+                      top={"8rem"}
+                    />
+                  </div>
+                )}
+              </div>
+              <div className=" absolute z-0 h-[2px] left-0 right-0 w-full bg-[#0FBF61] opacity-20 rounded mb-5"></div>
+            </div>
+          </div>
+          {!isDropdownOpen && (
+            <>
+              {isLoading ? (
+                <div className="flex flex-col items-center justify-center px-4 py-8 text-gray-900">
+                  <Spinner size={40} />
+                </div>
+              ) : (
+                <div className=" conatiner justify-center items-center  gap-10 flex mb[-20px]">
+                  {isGridView ? (
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 sm:grid-cols-5 2xl:grid-cols-6 gap-4 lg:gap-4 w-full">
+                      {!isLoading &&
+                        productsObject.map((book, index) => {
+                          const value =
+                            index % 2 !== 0
+                              ? "right-3 left-0 pl-0 pr-[75px]"
+                              : "";
+                          return (
+                            <>
+                              <CardsGrid
+                                key={book.id}
+                                title={book.title}
+                                author={book?.metadata?.author}
+                                rating={book?.metadata?.review_rating || 0}
+                                ratingCount={book?.metadata?.review_count || 0}
+                                handle={book.handle}
+                                price={loadPrice(book["variants"])}
+                                imageSrc={getProductImage(book.thumbnail)}
+                                variants={book["variants"]}
+                                wishlist={customer?.metadata?.wishlist || []}
+                                customer_id={customer?.id || null}
+                                customContainer={value}
+                                product={book}
+                                index={index}
+                              />
+                            </>
+                          );
+                        })}
+                    </div>
+                  ) : (
+                    <div className="md:px-2 xl:px-0">
+                      {!isLoading &&
+                        productsObject.map((book, index) => (
+                          <>
+                            <CardsList
+                              key={index}
+                              title={book.title}
+                              author={book?.metadata?.author}
+                              rating={book?.metadata?.review_rating || 0}
+                              ratingCount={book?.metadata?.review_count || 0}
+                              handle={book.handle}
+                              price={loadPrice(book["variants"])}
+                              imageSrc={getProductImage(book.thumbnail)}
+                              subtitle={book.subtitle}
+                              description={book.description}
+                              variants={book["variants"]}
+                              wishlist={customer?.metadata?.wishlist || []}
+                              customer_id={customer?.id || null}
+                              product={book}
+                              index={index}
+                            />
+                          </>
+                        ))}
+                    </div>
+                  )}
+                </div>
+              )}
+              <div className="mx-auto flex justify-center items-center mt-4 relative z-0">
+                <nav
+                  className="inline-flex items-center justify-center rounded-md shadow-sm"
+                  aria-label="Pagination"
+                >
+                  <a
+                    onClick={() => pageSwitch(currentPage - 1)}
+                    href="#"
+                    className="relative  inline-flex items-center rounded-l-sm px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+                  >
+                    <p className="text-sm  text-[#408080]">Previous</p>
+                  </a>
+
+                  {[...Array(round(totalPage + 1))].map((e, i) => {
+                    return (
+                      <>
+                        {i != 0 && (
+                          <>
+                            {i == currentPage ? (
+                              <a
+                                href="#"
+                                aria-current="page"
+                                className="relative z-10 inline-flex items-center bg-[#7CC9B5] px-4 py-2 text-sm font-semibold text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                              >
+                                {i}{" "}
+                              </a>
+                            ) : (
+                              <a
+                                href="#"
+                                onClick={() => pageSwitch(i)}
+                                className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+                              >
+                                {" "}
+                                {i}
+                              </a>
+                            )}
+                          </>
+                        )}{" "}
+                      </>
+                    );
+                  })}
+                  <a
+                    onClick={() => pageSwitch(currentPage + 1)}
+                    href="#"
+                    className="relative    inline-flex items-center rounded-r-sm px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+                  >
+                    <p className="text-sm text-[#408080] ">Next</p>
+                  </a>
+                </nav>
+              </div>
+            </>
+          )}
+        </div>
+        <AddPage isVisivle={showModal} onClose={() => setShowModal(false)} />
+      </div>
+    </Fragment>
+  );
+};
+
+export default BrowseComponent;
