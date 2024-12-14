@@ -55,7 +55,8 @@ const SubcriptionCard = () => {
   useEffect(() => {
     // Add listener
     const showSubInfoAlert = () => {
-      setShowInfoAlert(true);
+      // setShowInfoAlert(true);
+      window.location.href = `/account?sub_pur=true`;
     };
     document.addEventListener('show:subscription:info:alert', showSubInfoAlert);
 

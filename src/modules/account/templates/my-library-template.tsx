@@ -232,11 +232,11 @@ const MyLibraryTemplate = () => {
                           }}
                         ></div>
                       </div>
-                      <Link href={`/epub?id=${b_r?.product?.id}`}>
+                      <a href={`/epub?id=${b_r?.product?.id}`}>
                         <button className=" bg-[#015464] text-white items-center py-2 px-5 rounded-xl w-full font-bold text-[15px]">
                           Continue Reading
                         </button>
-                      </Link>
+                      </a>
                     </div>
                   );
                 }

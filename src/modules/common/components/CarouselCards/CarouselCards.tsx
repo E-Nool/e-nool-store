@@ -69,9 +69,9 @@ function CarouselCardItems({
       </p>
 
       <div className="flex flex-wrap space-x-4 pt-2 mb-1 text-center relative z-0 xl:mx-8">   
-        <Link href={`/epub?id=${product.id}`}>
+        <a href={`/epub?id=${product.id}`}>
           <Image src={eye} className="w-8" alt="" />
-        </Link>
+        </a>
         <Wishlist variants={variants} wishlist={wishlist} customer_id={customer_id}></Wishlist>         
         <button onClick={handleDropdownToggle}>
           <Image onClick={open} src={moreOption} className="w-8  " alt="" />

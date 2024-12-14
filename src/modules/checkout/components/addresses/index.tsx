@@ -1,11 +1,14 @@
+'use-client'
 import { useCheckout } from "@lib/context/checkout-context"
 import Button from "@modules/common/components/button"
 import Checkbox from "@modules/common/components/checkbox"
 import Spinner from "@modules/common/icons/spinner"
 import BillingAddress from "../billing_address"
 import ShippingAddress from "../shipping-address"
+import {useState} from 'react';
 
 const Addresses = () => {
+  const [isTermsChecked, setIsTermsChecked] = useState(false);
   const {
     sameAsBilling: { state: checked, toggle: onChange },
     editAddresses: { state: isEdit, toggle: setEdit },
@@ -13,6 +16,7 @@ const Addresses = () => {
     handleSubmit,
     cart,
   } = useCheckout()
+
   return (
     <div className="bg-[#015464] rounded-2xl text-white">
       <div className="text-xl-semi flex items-center gap-x-4 px-8 pb-6 pt-8">
@@ -23,7 +27,10 @@ const Addresses = () => {
       </div>
       {isEdit ? (
         <div className="px-8 pb-8 font-black checkout_address">
-          <ShippingAddress />
+          <ShippingAddress 
+            isTermsChecked={isTermsChecked}
+            setIsTermsChecked={setIsTermsChecked}
+          />
           <div className="mt-6 hidden">
             <Checkbox
               label="Same as billing address"
@@ -45,6 +52,7 @@ const Addresses = () => {
           <Button
             className="max-w-[300px] border-0 mt-6 bg-[#7AC8B3] color-[#015464] rounded-3xl"
             onClick={handleSubmit(setAddresses)}
+            disabled={!isTermsChecked}
           >
             Continue to Payment
           </Button>

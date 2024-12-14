@@ -73,9 +73,9 @@ const { state, open, close } = useToggleState(false)
       </p>
 
       <div className="flex flex-wrap space-x-4 pt-2 mb-1 text-center relative">
-        <Link href={`/epub?id=${product.id}`}>
+        <a href={`/epub?id=${product.id}`}>
           <Image src={eye} className="w-8" alt="" />
-        </Link>
+        </a>
         <Wishlist product={product} variants={variants} wishlist={wishlist} customer_id={customer_id} index={index} accountPage = {accountPage}></Wishlist>
         <button onClick={handleDropdownToggle}>
           <Image src={moreOption} className="w-8" alt="" />
@@ -151,9 +151,9 @@ export const CardsList = ({  title,
                   {title}
                 </h2>
               <div className="card-list-item-actions flex flex-row  space-x-6 pt-2 mb-1 text-center relative z-0 xl:mx-5">
-              <Link href={`/epub?id=${product.id}`}>
+              <a href={`/epub?id=${product.id}`}>
                 <Image src={eye} className="w-12" alt="" />
-              </Link>
+              </a>
                 <Wishlist product={product} variants={variants} wishlist={wishlist} customer_id={customer_id} index={index} accountPage = {accountPage}></Wishlist>
                
                 <button onClick={handleDropdownToggle}>

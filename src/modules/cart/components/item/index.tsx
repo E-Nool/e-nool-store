@@ -8,6 +8,7 @@ import Thumbnail from "@modules/products/components/thumbnail"
 import { getProductImage } from "@lib/util/prices"
 import Spinner from "@modules/common/icons/spinner";
 import {useState} from 'react';
+import { formatAmount } from "medusa-react"
 
 type ItemProps = {
   item: Omit<LineItem, "beforeInsert">
@@ -20,7 +21,9 @@ const Item = ({ item, region }: ItemProps) => {
 
   const truncate = (string = '', limit = 200) => {
     return (string.length <= limit) ? string : string.slice(0, limit) + "...";
+
   }
+    // console.log(item);
 
   return (
     <div className="grid grid-cols-[122px_1fr] gap-x-4">
@@ -34,6 +37,13 @@ const Item = ({ item, region }: ItemProps) => {
           <div className="flex flex-col">
             <a href={`/products/${item.variant.product.handle}`} className="text-xl pb-4">{item.title}</a>
             <span className="text-md pb-4">{item.variant.product.subtitle ? truncate(item.variant.product.subtitle, 60) : ""}</span>
+            {item?.variant?.product?.metadata?.isFree && (<span className="text-md ">
+              Platform Fee : {formatAmount({
+                                amount: item.subtotal || 0,
+                                region: region,
+                                includeTaxes: false,
+                              })}
+            </span>)}
             <span className="text-md ">Type : eBook</span>
             {/* <LineItemOptions variant={item.variant} /> */}
           </div>

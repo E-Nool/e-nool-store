@@ -85,7 +85,7 @@ export default function Example({product}) {
 
           <Tab.Panels className="mt-1">
               <Tab.Panel key={0} className={classNames("rounded-xl  p-1 mt-10", "" )}>          
-                  <h3 className="text-xs font-medium leading-5">
+                  <h3 className="text-xs font-medium leading-5 indent-4 text-justify">
                     {product?.description}
                   </h3>
                   <ReportBookModal product={product}></ReportBookModal>

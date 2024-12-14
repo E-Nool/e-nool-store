@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react"
 
 const ReviewItem = (props) => {
   const item = props.item
-  console.log(item);
+  // console.log(item);
 
 return (   
   <article className=" mb-5">

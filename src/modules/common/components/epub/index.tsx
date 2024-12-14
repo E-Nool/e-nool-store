@@ -19,8 +19,8 @@ const EpubComponent = (props) => {
   const { state, close, open } = useToggleState()
   const sub_key = 'enool_epub_bk_sub_id';
 
-  console.log("full book",full_book)
-  console.log("sample_book",sample_book)
+  // console.log("full book",full_book)
+  // console.log("sample_book",sample_book)
 
   const subscriber_key = 'enool_epub_bk_subscriber_id';
   const bk_purchased_key = 'enool_epub_bk_pur';

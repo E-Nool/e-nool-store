@@ -119,39 +119,39 @@ export default function StorePage() {
               Introduction
             </h1>*/}
             <ul className="flex flex-col list-decimal    ">
-              <li className=" w-[700px] max-w-full text-[#14adad] text-xs pb-4">
+              <li className=" w-[700px] max-w-full text-[#14adad] text-xs pb-4 indent-4 text-justify">
                 Introduction eNOOL, a division of MURUGAN GS E-Solution PVT Ltd ("we", "our", or "us"), is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our website (www.eNOOL.in) and our services.
               </li>
-              <li className=" w-[700px] max-w-full text-[#14adad] text-xs pb-4">
+              <li className=" w-[700px] max-w-full text-[#14adad] text-xs pb-4 indent-4 text-justify">
                 Information We Collect
                 <ul>
-                  <li className="max-w-full text-[#14adad] text-xs pb-4">
+                  <li className="max-w-full text-[#14adad] text-xs pb-4 indent-4 text-justify">
                     2.1 Personal Information We may collect personal information that you provide directly to us, including but not limited to: Name Email address Postal address Phone number Payment information (processed securely through our payment gateway)
                   </li>
-                  <li className="max-w-full text-[#14adad] text-xs pb-4">
+                  <li className="max-w-full text-[#14adad] text-xs pb-4 indent-4 text-justify">
                     2.2 Usage Information We automatically collect certain information about your device and how you interact with our services, including: IP address Device type Browser type Operating system Pages visited Time and date of visits Referring website addresses
                   </li>
                 </ul>
               </li>
-              <li className=" w-[700px] max-w-full text-[#14adad] text-xs pb-4">
+              <li className=" w-[700px] max-w-full text-[#14adad] text-xs pb-4 indent-4 text-justify">
                 How We Use Your Information We use your information for various purposes, including: Providing and maintaining our services Processing transactions and sending transaction notifications Responding to your inquiries and providing customer support Sending you marketing communications (with your consent) Improving our services and developing new features Protecting against fraud and unauthorized access
               </li>
-              <li className=" w-[700px] max-w-full text-[#14adad] text-xs pb-4">
+              <li className=" w-[700px] max-w-full text-[#14adad] text-xs pb-4 indent-4 text-justify">
                 How We Share Your Information We do not sell, trade, or otherwise transfer your personal information to third parties without your consent, except in the following circumstances: With service providers who assist us in operating our website and services To comply with legal obligations or enforce our policies In connection with a business transfer or acquisition
               </li>
-              <li className=" w-[700px] max-w-full text-[#14adad] text-xs pb-4">
+              <li className=" w-[700px] max-w-full text-[#14adad] text-xs pb-4 indent-4 text-justify">
                 Data Security We implement appropriate technical and organizational measures to protect your personal information. However, no method of transmission over the Internet or electronic storage is 100% secure, and we cannot guarantee absolute security.
               </li>
-              <li className=" w-[700px] max-w-full text-[#14adad] text-xs pb-4">
+              <li className=" w-[700px] max-w-full text-[#14adad] text-xs pb-4 indent-4 text-justify">
                 Your Rights Depending on your location, you may have certain rights regarding your personal information, including: The right to access your personal information The right to correct inaccurate information The right to delete your information The right to object to or restrict processing of your information The right to data portability To exercise these rights, please contact us at info@eNOOL.in.
               </li>
-              <li className=" w-[700px] max-w-full text-[#14adad] text-xs pb-4">
+              <li className=" w-[700px] max-w-full text-[#14adad] text-xs pb-4 indent-4 text-justify">
                 Cookies and Similar Technologies We use cookies and similar tracking technologies to collect and store information about your interactions with our website. You can manage your cookie preferences through your browser settings.
               </li>
-              <li className=" w-[700px] max-w-full text-[#14adad] text-xs pb-4">
+              <li className=" w-[700px] max-w-full text-[#14adad] text-xs pb-4 indent-4 text-justify">
                 Children's Privacy Our services are not intended for children under the age of 13. We do not knowingly collect personal information from children under 13. If you believe we have collected information from a child under 13, please contact us immediately.
               </li>
-              <li className=" w-[700px] max-w-full text-[#14adad] text-xs pb-4">
+              <li className=" w-[700px] max-w-full text-[#14adad] text-xs pb-4 indent-4 text-justify">
                 Changes to This Privacy Policy We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the "Last updated" date.
               </li>
               <li className=" w-[700px] max-w-full text-[#14adad] text-xs pb-4">

@@ -29,9 +29,12 @@ const ProductActions: React.FC<ProductActionsProps> = ({ product }) => {
 
     return variantPrice || cheapestPrice || null;
   }, [price]);
+
+  // console.log(selectedPrice);
   const router = useRouter();
   const readSample = () => {
-    router.push(`/epub?id=` + product.id);
+    window.location.href = `/epub?id=` + product.id;
+    // router.push(`/epub?id=` + product.id);
   };
 
   // console.log(product);
@@ -94,11 +97,12 @@ const ProductActions: React.FC<ProductActionsProps> = ({ product }) => {
         </h1>
       </div>
       <div>
+        {product?.metadata?.isFree && <h1 className="text-[#015464] text-md mb-2 font-bold">Platform Fee  : {selectedPrice?.original_price}</h1>}
         <h1 className="text-[#015464] text-xs">Format : {product.material}</h1>
       </div>
 
       <div>
-        <h1 className="text-[#015464] font-graphikBold text-[14px] mt-4">
+        <h1 className="text-[#015464] font-graphikBold text-[14px] mt-4 indent-4 text-justify">
           {product.subtitle}
         </h1>
       </div>

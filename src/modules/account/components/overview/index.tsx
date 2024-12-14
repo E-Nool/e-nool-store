@@ -17,7 +17,7 @@ import { Customer, Order } from "@medusajs/medusa";
 import Link from "next/link";
 import MySubscriptions from "../overview/MySubscriptions";
 import MyOrders from "../overview/MyOrders";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 type OverviewProps = {
   orders?: Order[];
@@ -29,6 +29,7 @@ const Overview = ({ orders, customer }: OverviewProps) => {
   const [subsLoaded, setSubsLoaded] = useState(false); // Initial state is 'all'
   const [subscriptions, setSubscriptions] = useState([]);
   const [bookReadings, setBookReadings] = useState([]);
+  const [showInfoAlert, setShowInfoAlert] = useState(false);
 
   const handleButtonClick = (contentType) => {
     setActiveContent(contentType);
@@ -39,6 +40,14 @@ const Overview = ({ orders, customer }: OverviewProps) => {
   };
 
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+     const sub_pur = searchParams.get('sub_pur');
+     if(sub_pur && sub_pur == 'true'){
+        setShowInfoAlert(true);
+     }
+  }, []);
 
   useEffect(
     function () {
@@ -81,6 +90,10 @@ const Overview = ({ orders, customer }: OverviewProps) => {
           src={Lefe}
           alt=""
         />
+
+        {showInfoAlert && <div className="p-5 my-5 bg-[] text-green-700 bg-green-300  text-center">
+          It will take a maximum of 5 minutes to update your plan once you purchase the subscription.
+        </div>}
 
         <div className="mx-auto lg:px-16 px-2 ">
           <div className="  pb-8 ">
@@ -391,11 +404,11 @@ const Overview = ({ orders, customer }: OverviewProps) => {
                             {truncate(b_r?.product?.description || "", 150)}
                           </p>
                           <div className=" mt-5">
-                            <Link href={`/epub?id=${b_r?.product?.id}`}>
+                            <a href={`/epub?id=${b_r?.product?.id}`}>
                               <button className="w-full md:w-[auto] block md:inline-block bg-[#015464] p-2 px-8 rounded-3xl text-white">
                                 Read
                               </button>
-                            </Link>
+                            </a>
                             <Link href={`/products/${b_r?.product?.handle}`}>
                               <button className="mt-2 md:mt-0 w-full md:w-[auto] block md:inline-block bg-[#7CC9B5] md:ml-5 p-2 px-8 rounded-3xl text-white">
                                 Detail

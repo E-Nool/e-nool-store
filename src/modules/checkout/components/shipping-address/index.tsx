@@ -8,13 +8,18 @@ import AddressSelect from "../address-select"
 import CountrySelect from "../country-select"
 import Checkbox from "@modules/common/components/checkbox"
 
-const ShippingAddress = () => {
+const ShippingAddress = ({isTermsChecked, setIsTermsChecked}) => {
   const { customer } = useMeCustomer()
   const [phone, setPhone] = useState('');
+  // const [isTermsChecked, setIsTermsChecked] = useState(false);
   const handlePhoneChange = event => {
     const result = event.target.value.replace(/\D/g, '');
     setPhone(result);
   };
+
+  const handleTerms = (event) => {
+    setIsTermsChecked(event.target.checked)
+  }
 
   return (
     <div>
@@ -128,9 +133,17 @@ const ShippingAddress = () => {
               touched={touchedFields}
             />
             <label className="flex gap-x-2 font-normal">
-              <input type="checkbox" />
+              <input 
+                type="checkbox" 
+                id="checkout-terms" 
+                value="1" 
+                checked={isTermsChecked} 
+                onChange={handleTerms}
+              />
               Terms & Contitions
+              <br/>
             </label>
+            <p className="font-normal"><small>Please accept the terms and conditions to proceed with the payment.</small></p>
           </div>
         )}
       </ConnectForm>
